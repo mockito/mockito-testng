@@ -1,0 +1,42 @@
+//
+//     https://github.com/mockito/shipkit/blob/master/docs/getting-started.md
+//
+shipkit {
+   gitHub.repository = "mockito/mockito-testng"
+   gitHub.readOnlyAuthToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
+}
+
+allprojects {
+   plugins.withId("org.shipkit.bintray") {
+
+       //Bintray configuration is handled by JFrog Bintray Gradle Plugin
+       //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin
+       bintray {
+
+           pkg {
+               repo = 'maven' //https://bintray.com/mockito/maven
+
+               //We need to use some user id here, because the Bintray key is associated with the user
+               //However, any user id is good, so longer the user has necessary privileges to the repository
+               user = 'szczepiq' //https://bintray.com/szczepiq
+
+               userOrg = 'mockito' //https://bintray.com/mockito
+               licenses = ['MIT']
+               labels = ['testng', 'mockito']
+               publish = false //can be changed to 'false' for testing
+
+               //See our Bintray packages at https://bintray.com/mockito/maven
+               name = "mockito"
+
+               version {
+                   //Notable versions are automatically synced to Maven Central repository (https://oss.sonatype.org/)
+                   mavenCentralSync {
+                       sync = true
+                       user = System.env.NEXUS_TOKEN_USER
+                       password = System.env.NEXUS_TOKEN_PWD
+                   }
+               }
+           }
+       }
+   }
+}
