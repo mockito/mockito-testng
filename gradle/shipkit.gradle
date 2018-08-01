@@ -23,10 +23,10 @@ allprojects {
                userOrg = 'mockito' //https://bintray.com/mockito
                licenses = ['MIT']
                labels = ['testng', 'mockito']
-               publish = false //can be changed to 'false' for testing
+               publish = true //can be changed to 'false' for testing
 
                //See our Bintray packages at https://bintray.com/mockito/maven
-               name = "mockito"
+               name = "mockito-testng"
 
                version {
                    //Notable versions are automatically synced to Maven Central repository (https://oss.sonatype.org/)
