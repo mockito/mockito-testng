@@ -6,7 +6,10 @@ Mockito utility classes for easy integration with TestNG
 
 ```Gradle
 repositories {
-  mavenCentral()
+  maven {
+    //For now, we plan to start releasing to Maven Central soon
+    url "https://dl.bintray.com/mockito/maven"
+  }
 }
 dependencies {
   testCompile "org.mockito:mockito-testng:VERSION"
