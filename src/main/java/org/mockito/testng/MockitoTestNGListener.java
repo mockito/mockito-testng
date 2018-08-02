@@ -4,6 +4,8 @@
  */
 package org.mockito.testng;
 
+import org.mockito.testng.internal.MockitoAfterTestNGMethod;
+import org.mockito.testng.internal.MockitoBeforeTestNGMethod;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestNGListener;
