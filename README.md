@@ -37,4 +37,4 @@ The original TestNGListener was a part of the core Mockito repository. However, 
 
 ## Help
 
-We are looking for maintainers of TestNG integration. Let us know if you want to join! Mockito core team has limited capacity and focuses on the core library.
+We are looking for maintainers of TestNG integration! Let us know if you want to join. Mockito core team has limited capacity and focuses on the core library.
