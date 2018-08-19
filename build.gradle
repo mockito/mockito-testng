@@ -21,17 +21,17 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-    mavenLocal() //useful for testing when consuming locally built dependencies (like Mockito)
     jcenter()
 }
 
 dependencies {
-    compile "org.mockito:mockito-core:2.+"
+    compile "org.mockito:mockito-core:2.21.0"
     compile "org.testng:testng:6.3.1"
     testCompile "org.assertj:assertj-core:2.9.0"
 }
 
 test {
-    include "**/*Test.class"
-    useTestNG()
+    useTestNG() {
+        suites file('src/test/resources/mockito-testng.xml')
+    }
 }

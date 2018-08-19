@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,11 +22,12 @@ public class ConfigurationMethodTest {
 
     @BeforeMethod
     public void some_behavior() {
-        when(map.get("a")).thenReturn(1);
+        when(map.get("the answer to ...")).thenReturn(42);
     }
 
+
     @Test
-    public void mocks_should_stay_configured_with_behavior() {
-        assertThat(map.get("a")).isEqualTo(1);
+    public void mocks_should_stay_configured_with_behavior() throws IOException {
+        assertThat(map.get("the answer to ...")).isEqualTo(42);
     }
 }
