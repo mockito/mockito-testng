@@ -32,7 +32,6 @@ dependencies {
 }
 
 test {
-    useTestNG() {
-        suites file('src/test/resources/mockito-testng.xml')
-    }
+    include "**/*Test.class"
+    useTestNG()
 }
