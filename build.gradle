@@ -21,6 +21,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
+    mavenLocal() //useful for testing when consuming locally built dependencies (like Mockito)
     jcenter()
 }
 
