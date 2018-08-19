@@ -5,21 +5,27 @@
 package org.mockito.testng.internal;
 
 import org.mockito.Captor;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import org.mockito.MockitoSession;
 import org.mockito.internal.configuration.CaptorAnnotationProcessor;
 import org.mockito.internal.util.reflection.Fields;
 import org.mockito.internal.util.reflection.InstanceField;
+import org.mockito.quality.Strictness;
 import org.testng.IInvokedMethod;
 import org.testng.ITestResult;
 
 import java.util.List;
-import java.util.WeakHashMap;
+import java.util.Map;
 
 import static org.mockito.internal.util.reflection.Fields.annotatedBy;
 
 public class MockitoBeforeTestNGMethod {
 
-    private final WeakHashMap<Object, Boolean> initializedInstances = new WeakHashMap<Object, Boolean>();
+    private final Map<Object, MockitoSession> sessions;
+
+    public MockitoBeforeTestNGMethod(Map<Object, MockitoSession> sessions) {
+        this.sessions = sessions;
+    }
 
     /**
      * Initialize mocks.
@@ -40,11 +46,16 @@ public class MockitoBeforeTestNGMethod {
     }
 
     private void initMocks(ITestResult testResult) {
-        if (alreadyInitialized(testResult.getInstance())) {
+        Object testInstance = testResult.getInstance();
+        if (alreadyInitialized(testInstance)) {
             return;
         }
-        MockitoAnnotations.initMocks(testResult.getInstance());
-        markAsInitialized(testResult.getInstance());
+        MockitoSession session = Mockito.mockitoSession()
+                .initMocks(testInstance)
+                .strictness(Strictness.STRICT_STUBS)
+                .startMocking();
+
+        sessions.put(testInstance, session);
     }
 
     @SuppressWarnings("unchecked")
@@ -55,12 +66,8 @@ public class MockitoBeforeTestNGMethod {
         }
     }
 
-    private void markAsInitialized(Object instance) {
-        initializedInstances.put(instance, true);
-    }
-
     private boolean alreadyInitialized(Object instance) {
-        return initializedInstances.containsKey(instance);
+        return sessions.containsKey(instance);
     }
 
 }
