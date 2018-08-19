@@ -4,6 +4,7 @@
  */
 package org.mockito.testng;
 
+import org.mockito.MockitoSession;
 import org.mockito.testng.internal.MockitoAfterTestNGMethod;
 import org.mockito.testng.internal.MockitoBeforeTestNGMethod;
 import org.testng.IInvokedMethod;
@@ -11,6 +12,9 @@ import org.testng.IInvokedMethodListener;
 import org.testng.ITestNGListener;
 import org.testng.ITestResult;
 import org.testng.annotations.Listeners;
+
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Mockito TestNG Listener, this listener adds the following behavior to your test :
@@ -55,9 +59,9 @@ import org.testng.annotations.Listeners;
  */
 public class MockitoTestNGListener implements IInvokedMethodListener {
 
-    private final MockitoBeforeTestNGMethod beforeTest = new MockitoBeforeTestNGMethod();
-    private final MockitoAfterTestNGMethod afterTest = new MockitoAfterTestNGMethod();
-
+    private final Map<Object, MockitoSession> sessions = new WeakHashMap<>();
+    private final MockitoBeforeTestNGMethod beforeTest = new MockitoBeforeTestNGMethod(sessions);
+    private final MockitoAfterTestNGMethod afterTest = new MockitoAfterTestNGMethod(sessions);
 
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
         if (hasMockitoTestNGListenerInTestHierarchy(testResult.getTestClass().getRealClass())) {
