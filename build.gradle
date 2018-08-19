@@ -34,4 +34,8 @@ dependencies {
 test {
     include "**/*Test.class"
     useTestNG()
+    testLogging {
+        exceptionFormat 'full'
+        showCauses true
+    }
 }
