@@ -6,21 +6,31 @@ package org.mockito.testng.internal;
 
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoSession;
 import org.mockito.Spy;
 import org.mockito.internal.util.reflection.Fields;
 import org.testng.IInvokedMethod;
 import org.testng.ITestResult;
 
 import java.util.Collection;
+import java.util.Map;
 
 import static org.mockito.internal.util.reflection.Fields.annotatedBy;
 
 public class MockitoAfterTestNGMethod {
 
-    public void applyFor(IInvokedMethod method, ITestResult testResult) {
-        Mockito.validateMockitoUsage();
+    private final Map<Object, MockitoSession> sessions;
 
+    public MockitoAfterTestNGMethod(Map<Object, MockitoSession> sessions) {
+        this.sessions = sessions;
+    }
+
+    public void applyFor(IInvokedMethod method, ITestResult testResult) {
         if (method.isTestMethod()) {
+            MockitoSession mockitoSession = sessions.get(testResult.getInstance());
+            if (mockitoSession != null) {
+                mockitoSession.finishMocking(testResult.getThrowable());
+            }
             resetMocks(testResult.getInstance());
         }
     }
