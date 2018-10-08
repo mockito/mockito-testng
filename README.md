@@ -31,6 +31,13 @@ Please send us a pull request!
 - ```./gradlew build``` - tests code and assembles artifacts
 - ```./gradlew publishToMavenLocal``` - publishes to local Maven repo, useful for local testing
 
+## Releasing
+
+Every merged pull request is published to JCenter and Maven Central.
+Actually, any change on master that happily builds on Travis CI is published
+unless the binaries are the same as the previous release.
+The release automation uses Shipkit framework (http://shipkit.org).
+
 ## History
 
 The original TestNGListener was a part of the core Mockito repository. However, the jar was never released. Core Mockito team does not work with TestNG so it was hard for us to maintain TestNG integration. In Summer 2018 we moved the TestNG integration to a separate repository under "Mockito" organization on GitHub.
