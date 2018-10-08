@@ -4,6 +4,8 @@
 shipkit {
    gitHub.repository = "mockito/mockito-testng"
    gitHub.readOnlyAuthToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
+
+   team.developers = ['mockitoguy:Szczepan Faber', 'skabashnyuk:Sergii Kabashniuk']
 }
 
 allprojects {
