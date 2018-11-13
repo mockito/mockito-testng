@@ -30,6 +30,7 @@ public class MockitoAfterTestNGMethod {
             MockitoSession mockitoSession = sessions.get(testResult.getInstance());
             if (mockitoSession != null) {
                 mockitoSession.finishMocking(testResult.getThrowable());
+                sessions.remove(testResult.getInstance());
             }
             resetMocks(testResult.getInstance());
         }
