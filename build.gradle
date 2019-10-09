@@ -27,15 +27,23 @@ repositories {
 
 dependencies {
     compile "org.mockito:mockito-core:2.23.0"
-    compile "org.testng:testng:6.3.1"
+    compile "org.testng:testng:6.4"
     testCompile "org.assertj:assertj-core:2.9.0"
 }
 
 test {
     include "**/*Test.class"
+    exclude 'org/mockitousage/testng/LenientStubsTest.class'
     useTestNG()
     testLogging {
         exceptionFormat 'full'
         showCauses true
     }
 }
+
+task testLenientStubs(type: Test) {
+    useTestNG() {
+        suites 'src/test/resources/testng-lenient.xml'
+    }
+}
+test.finalizedBy testLenientStubs

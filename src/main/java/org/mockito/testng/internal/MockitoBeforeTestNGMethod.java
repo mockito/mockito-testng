@@ -22,6 +22,9 @@ import static org.mockito.internal.util.reflection.Fields.annotatedBy;
 public class MockitoBeforeTestNGMethod {
 
     private final Map<Object, MockitoSession> sessions;
+    private Strictness strictness = Strictness.STRICT_STUBS;
+
+    private static final String STRICTNESS_KEY = "org.mockito.testng.strictness";
 
     public MockitoBeforeTestNGMethod(Map<Object, MockitoSession> sessions) {
         this.sessions = sessions;
@@ -50,9 +53,14 @@ public class MockitoBeforeTestNGMethod {
         if (alreadyInitialized(testInstance)) {
             return;
         }
+
+        String strictnessValue = testResult.getTestContext().getSuite().getXmlSuite().getParameter(STRICTNESS_KEY);
+        if (null != strictnessValue) {
+            strictness = Strictness.valueOf(strictnessValue);
+        }
         MockitoSession session = Mockito.mockitoSession()
                 .initMocks(testInstance)
-                .strictness(Strictness.STRICT_STUBS)
+                .strictness(strictness)
                 .startMocking();
 
         sessions.put(testInstance, session);
