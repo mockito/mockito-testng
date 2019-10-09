@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Lenient Stubs">
+  <parameter name="org.mockito.testng.strictness"  value="LENIENT"/>
+  <test name="lenientStubsTest">
+    <classes>
+      <class name="org.mockitousage.testng.LenientStubsTest"/>
+    </classes>
+  </test>
+</suite>
