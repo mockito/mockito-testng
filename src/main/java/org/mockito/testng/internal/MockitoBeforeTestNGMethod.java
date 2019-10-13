@@ -17,14 +17,13 @@ import org.testng.ITestResult;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.testng.MockitoTestNGListener.STRICTNESS_LEVEL;
 import static org.mockito.internal.util.reflection.Fields.annotatedBy;
 
 public class MockitoBeforeTestNGMethod {
 
     private final Map<Object, MockitoSession> sessions;
     private Strictness strictness = Strictness.STRICT_STUBS;
-
-    private static final String STRICTNESS_KEY = "org.mockito.testng.strictness";
 
     public MockitoBeforeTestNGMethod(Map<Object, MockitoSession> sessions) {
         this.sessions = sessions;
@@ -54,7 +53,7 @@ public class MockitoBeforeTestNGMethod {
             return;
         }
 
-        String strictnessValue = testResult.getTestContext().getSuite().getXmlSuite().getParameter(STRICTNESS_KEY);
+        String strictnessValue = testResult.getTestContext().getSuite().getXmlSuite().getParameter(STRICTNESS_LEVEL);
         if (null != strictnessValue) {
             strictness = Strictness.valueOf(strictnessValue);
         }

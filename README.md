@@ -25,6 +25,27 @@ See the test source code for examples.
 Can you contribute usage information for this section of README file?
 Please send us a pull request!
 
+**Setting Strictness**
+
+STRICT_STUBS is the default, but this can be overriden if a test class is not ready for that level.  The relevant constant is `org.mockito.testng.MockitoTestNGListener.STRICTNESS_LEVEL` with the value `org.mockito.testng.strictness`
+
+Set in testng.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="strictness">
+  <parameter name="org.mockito.testng.strictness"  value="LENIENT"/>
+  <!-- etc. -->
+</suite>
+```
+
+Set in annotation
+```java
+@BeforeSuite // or any TestNG annotation that allows for ITestContext as parameter for that matter
+public void beforeSuite(ITestContext iTestContext) {
+  iTestContext.getSuite().getXmlSuite().setParameter(org.mockito.testng.MockitoTestNGListener.STRICTNESS_LEVEL, "LENIENT");
+}
+```
+
 ## Developing
 
 - open in IDEA to develop or run ```./gradlew idea``` and then open in IDEA

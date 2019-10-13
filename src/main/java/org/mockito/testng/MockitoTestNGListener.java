@@ -63,6 +63,8 @@ public class MockitoTestNGListener implements IInvokedMethodListener {
     private final MockitoBeforeTestNGMethod beforeTest = new MockitoBeforeTestNGMethod(sessions);
     private final MockitoAfterTestNGMethod afterTest = new MockitoAfterTestNGMethod(sessions);
 
+    public static final String STRICTNESS_LEVEL = "org.mockito.testng.strictness";
+
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
         if (hasMockitoTestNGListenerInTestHierarchy(testResult.getTestClass().getRealClass())) {
             beforeTest.applyFor(method, testResult);
