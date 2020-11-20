@@ -4,26 +4,55 @@ Mockito utility classes for easy integration with TestNG
 
 ## Installation
 
+### Gradle
 ```Gradle
-repositories {
-  maven {
-    //For now, we plan to start releasing to Maven Central soon
-    url "https://dl.bintray.com/mockito/maven"
-  }
-}
 dependencies {
   testCompile "org.mockito:mockito-testng:VERSION"
 }
+```
+
+### Maven
+```xml
+<dependency>
+  <groupId>org.mockito</groupId>
+  <artifactId>mockito-testng</artifactId>
+  <version>VERSION</version>
+  <scope>test</scope>
+</dependency>
 ```
 
 For latest version, see the [release notes](/docs/release-notes.md).
 
 ## Usage
 
-See the test source code for examples.
+Simply add `@Listeners` annotation on your test class
 
-Can you contribute usage information for this section of README file?
-Please send us a pull request!
+```java
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.testng.MockitoTestNGListener;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
+import java.util.Map;
+
+@Listeners(MockitoTestNGListener.class)
+public class MyTest {
+
+    @Mock
+    Map map;
+
+    @InjectMocks
+    SomeType someType;
+
+    @Test
+    void test() {
+        // ...
+    }
+}
+```
+
+`MockitoTestNGListener` will do job for you and initialize all fields annotated with mockito annotations.
 
 ## Developing
 
