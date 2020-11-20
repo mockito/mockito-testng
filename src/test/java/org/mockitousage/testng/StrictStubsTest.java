@@ -28,7 +28,8 @@ public class StrictStubsTest {
     @Test public void detects_potential_stubbing_problem() {
         when(list.add("a")).thenReturn(true);
 
-        Assertions.assertThatThrownBy(() -> list.add("b")).isInstanceOf(PotentialStubbingProblem.class);
+        Assertions.assertThatThrownBy(() -> StrictStubsCode.testStrictStubs(list, "b"))
+                .isInstanceOf(PotentialStubbingProblem.class);
     }
 
     @Test public void detects_unused_stubs() {
