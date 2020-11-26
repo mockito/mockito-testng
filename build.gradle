@@ -5,15 +5,19 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.shipkit:shipkit:2.0.31"
+        classpath "org.shipkit:shipkit-auto-version:0.0.+"
+        classpath "org.shipkit:shipkit-changelog:0.0.+"
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+"
     }
 }
 
 description = "Mockito for TestNG"
 
 apply plugin: "java-library"
-apply plugin: "idea"
-apply plugin: "org.shipkit.java"
+
+apply from: "gradle/shipkit.gradle"
+apply from: "gradle/java-publication.gradle"
+apply from: "gradle/ide.gradle"
 
 group = "org.mockito"
 
