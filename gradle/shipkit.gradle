@@ -1,47 +1,18 @@
-//
-//     https://github.com/mockito/shipkit/blob/master/docs/getting-started.md
-//
-shipkit {
-   gitHub.repository = "mockito/mockito-testng"
-   gitHub.readOnlyAuthToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
+//Plugin jars are added to the buildscript classpath in the root build.gradle file
+apply plugin: "org.shipkit.shipkit-auto-version"
+apply plugin: "org.shipkit.shipkit-changelog"
+apply plugin: "org.shipkit.shipkit-gh-release"
 
-   team.developers = [
-           'mockitoguy:Szczepan Faber',
-           'skabashnyuk:Sergii Kabashniuk'
-   ]
+tasks.named("generateChangelog") {
+    previousRevision = "v" + project.ext.'shipkit-auto-version.previous-version'
+    readOnlyToken = System.getenv("GITHUB_TOKEN")
+    repository = "mockito/mockito-testng"
 }
 
-allprojects {
-   plugins.withId("org.shipkit.bintray") {
-
-       //Bintray configuration is handled by JFrog Bintray Gradle Plugin
-       //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin
-       bintray {
-
-           pkg {
-               repo = 'maven' //https://bintray.com/mockito/maven
-
-               //We need to use some user id here, because the Bintray key is associated with the user
-               //However, any user id is good, so longer the user has necessary privileges to the repository
-               user = 'szczepiq' //https://bintray.com/szczepiq
-
-               userOrg = 'mockito' //https://bintray.com/mockito
-               licenses = ['MIT']
-               labels = ['testng', 'mockito']
-               publish = true //can be changed to 'false' for testing
-
-               //See our Bintray packages at https://bintray.com/mockito/maven
-               name = "mockito-testng"
-
-               version {
-                   //Notable versions are automatically synced to Maven Central repository (https://oss.sonatype.org/)
-                   mavenCentralSync {
-                       sync = true
-                       user = System.env.NEXUS_TOKEN_USER
-                       password = System.env.NEXUS_TOKEN_PWD
-                   }
-               }
-           }
-       }
-   }
+tasks.named("githubRelease") {
+    def genTask = tasks.named("generateChangelog").get()
+    dependsOn genTask
+    repository = genTask.repository
+    changelog = genTask.outputFile
+    writeToken = System.getenv("GITHUB_TOKEN")
 }
