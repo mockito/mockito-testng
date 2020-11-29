@@ -2,6 +2,8 @@
 
 Mockito utility classes for easy integration with TestNG
 
+[![CI](https://github.com/mockito/mockito-testng/workflows/CI/badge.svg)](https://github.com/mockito/mockito-testng/actions?query=workflow%3ACI)
+
 ## Installation
 
 ### Gradle
@@ -63,7 +65,7 @@ public class MyTest {
 ## Releasing
 
 Every merged pull request is published to JCenter and Maven Central.
-Actually, any change on master that happily builds on Travis CI is published
+Actually, any change on master that happily builds on GitHub Actions is published
 unless the binaries are the same as the previous release.
 The release automation uses Shipkit framework (http://shipkit.org).
 

@@ -9,6 +9,8 @@ name: CI
 
 on:
   push:
+    branches:
+      - master
     tags-ignore:
       - v* # release tags are automatically generated after a successful CI build, no need to run CI against them
   pull_request:
@@ -22,6 +24,7 @@ jobs:
   #
   verify:
     runs-on:  ubuntu-latest
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
 
     steps:
 
@@ -36,10 +39,8 @@ jobs:
       - name: 3. Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1 # https://github.com/gradle/wrapper-validation-action
 
-#      need change in build
-#
-#      - name: 4. Build and check reproducibility of artifacts
-#        run: ./check_reproducibility.sh
+      - name: 4. Build and check reproducibility of artifacts
+        run: ./check_reproducibility.sh
 
   #
   # Main build job
