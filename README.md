@@ -65,13 +65,13 @@ public class MyTest {
 ## Releasing
 
 Every merged pull request is published to JCenter and Maven Central.
-Actually, any change on master that happily builds on GitHub Actions is published
+Actually, any change on master that happily builds on CI is published
 unless the binaries are the same as the previous release.
 The release automation uses Shipkit framework (http://shipkit.org).
 
 ## History
 
-The original TestNGListener was a part of the core Mockito repository. However, the jar was never released. Core Mockito team does not work with TestNG so it was hard for us to maintain TestNG integration. In Summer 2018 we moved the TestNG integration to a separate repository under "Mockito" organization on GitHub.
+The original TestNGListener was a part of the core Mockito repository. However, the jar was never released. Core Mockito team does not work with TestNG so it was hard for us to maintain TestNG integration. In Summer 2018 we moved the TestNG integration to a separate repository under "Mockito" organization.
 
 ## Help
 
