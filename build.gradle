@@ -15,6 +15,7 @@ description = "Mockito for TestNG"
 
 apply plugin: "java-library"
 
+apply from: "gradle/reproducible.gradle"
 apply from: "gradle/shipkit.gradle"
 apply from: "gradle/java-publication.gradle"
 apply from: "gradle/ide.gradle"
