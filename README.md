@@ -4,6 +4,9 @@ Mockito utility classes for easy integration with TestNG
 
 [![CI](https://github.com/mockito/mockito-testng/workflows/CI/badge.svg)](https://github.com/mockito/mockito-testng/actions?query=workflow%3ACI)
 
+[![Maven Central](https://img.shields.io/maven-central/v/org.mockito/mockito-testng.svg)](https://search.maven.org/artifact/org.mockito/mockito-testng/)
+[![Bintray](https://img.shields.io/bintray/v/mockito/maven/mockito-testng)](https://bintray.com/mockito/maven/mockito-testng/_latestVersion)
+
 ## Installation
 
 ### Gradle
