@@ -26,7 +26,7 @@ dependencies {
 </dependency>
 ```
 
-For latest version, see the [release notes](/docs/release-notes.md).
+For latest version, see the [releases](https://github.com/mockito/mockito-testng/releases).
 
 ## Usage
 
