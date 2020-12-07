@@ -95,7 +95,7 @@ jobs:
         java-version: 8
 
     - name: Build and publish to Bintray/MavenCentral
-      run: ./gradlew --debug bintrayUpload githubRelease
+      run: ./gradlew bintrayUpload githubRelease
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         BINTRAY_API_KEY: ${{secrets.BINTRAY_API_KEY}}
