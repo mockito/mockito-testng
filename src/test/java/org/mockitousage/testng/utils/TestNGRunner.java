@@ -12,7 +12,7 @@ import java.util.ListIterator;
 
 public class TestNGRunner {
 
-    public Result run(Class ... testClasses) {
+    public Result run(Class<?> ... testClasses) {
         TestNG testNG = new TestNG();
         testNG.setVerbose(0);
         testNG.setUseDefaultListeners(false);
@@ -22,7 +22,14 @@ public class TestNGRunner {
 
         testNG.setTestClasses(testClasses);
 
-        testNG.run();
+        // run test in separate thread in order to avoid conflict MockitoSession from parent test
+        Thread testThread = new Thread(testNG::run);
+        testThread.start();
+        try {
+            testThread.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
 
         return new Result(testNG, failureRecorder);
     }
@@ -50,7 +57,7 @@ public class TestNGRunner {
      */
     public static class FailureRecordingListener implements ITestListener, IConfigurationListener {
 
-        public List<ITestResult> failedTestResults = new ArrayList<ITestResult>();
+        public List<ITestResult> failedTestResults = new ArrayList<>();
 
         public void onTestFailure(ITestResult result) {
             failedTestResults.add(result);

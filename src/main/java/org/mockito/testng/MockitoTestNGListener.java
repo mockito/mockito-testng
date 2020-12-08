@@ -4,45 +4,42 @@
  */
 package org.mockito.testng;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.WeakHashMap;
+
+import org.mockito.Mockito;
 import org.mockito.MockitoSession;
-import org.mockito.testng.internal.MockitoAfterTestNGMethod;
-import org.mockito.testng.internal.MockitoBeforeTestNGMethod;
+import org.mockito.quality.Strictness;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestNGListener;
 import org.testng.ITestResult;
 import org.testng.annotations.Listeners;
 
-import java.util.Map;
-import java.util.WeakHashMap;
-
 /**
- * Mockito TestNG Listener, this listener adds the following behavior to your test :
+ * <p>Mockito TestNG Listener, this listener initializes mocks and handles strict stubbing, it is similar to JUnit
+ * <code>MockitoJUnitRunner</code>, <code>MockitoRule</code>, <code>MockitoExtension</code> and adds
+ * the following behavior to your test:</p>
+ *
  * <ul>
  *     <li>
- *         Initializes mocks annotated with {@link org.mockito.Mock}, so that <strong>explicit usage of
- *         {@link org.mockito.MockitoAnnotations#initMocks(Object)} is not necessary</strong>.
- *         <strong>Note :</strong> With TestNG, mocks are initialized before any TestNG method, either a <em>configuration
- *         method</em> (&#064;BeforeMethod, &#064;BeforeClass, etc) or a <em>test</em> method, i.e. mocks are initialized
- *         once only once for each test instance.
+ *         Before any TestNG method, either a <em>configuration method</em> (&#064;BeforeMethod, &#064;BeforeClass, etc)
+ *         or a <em>test</em> method MockitoSession is started by:
+ *         <pre class="code"><code class="java">
+ *         Mockito.mockitoSession()
+ *          .initMocks(testInstance)
+ *          .strictness(Strictness.STRICT_STUBS)
+ *          .startMocking()
+ *         </code></pre>
+ *         See javadoc {@link MockitoSession}
  *     </li>
  *     <li>
- *         As mocks are initialized only once, they will be reset after each <em>test method</em>.
- *         See javadoc {@link org.mockito.Mockito#reset(Object[])}
- *     </li>
- *     <li>
- *         Validates framework usage after each test method. See javadoc for {@link org.mockito.Mockito#validateMockitoUsage()}.
+ *         After each <em>test</em> method {@link MockitoSession#finishMocking()} is called.
  *     </li>
  * </ul>
  *
- * <p>
- * The listener is completely optional - there are other ways you can get &#064;Mock working, for example by writing a base class.
- * Explicitly validating framework usage is also optional because it is triggered automatically by Mockito every time you use the framework.
- * See javadoc for {@link org.mockito.Mockito#validateMockitoUsage()}.
- *
- * <p>
- * Read more about &#064;Mock annotation in javadoc for {@link org.mockito.MockitoAnnotations}
- *
+ * <p>Example usage:</p>
  * <pre class="code"><code class="java">
  * <b>&#064;Listeners(MockitoTestNGListener.class)</b>
  * public class ExampleTest {
@@ -56,27 +53,38 @@ import java.util.WeakHashMap;
  *     }
  * }
  * </code></pre>
+ *
+ * <p>
+ * <code>MockitoTestNGListener</code> not working with parallel tests,
+ * more information https://github.com/mockito/mockito-testng/issues/20
+ * </p>
  */
 public class MockitoTestNGListener implements IInvokedMethodListener {
 
     private final Map<Object, MockitoSession> sessions = new WeakHashMap<>();
-    private final MockitoBeforeTestNGMethod beforeTest = new MockitoBeforeTestNGMethod(sessions);
-    private final MockitoAfterTestNGMethod afterTest = new MockitoAfterTestNGMethod(sessions);
 
+    @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-        if (hasMockitoTestNGListenerInTestHierarchy(testResult.getTestClass().getRealClass())) {
-            beforeTest.applyFor(method, testResult);
+        if (hasMockitoTestNGListenerInTestHierarchy(testResult)) {
+            sessions.computeIfAbsent(testResult.getInstance(), testInstance ->
+                    Mockito.mockitoSession()
+                            .initMocks(testInstance)
+                            .strictness(Strictness.STRICT_STUBS)
+                            .startMocking()
+            );
         }
     }
 
+    @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-        if (hasMockitoTestNGListenerInTestHierarchy(testResult.getTestClass().getRealClass())) {
-            afterTest.applyFor(method, testResult);
+        if (hasMockitoTestNGListenerInTestHierarchy(testResult) && method.isTestMethod()) {
+            Optional.ofNullable(sessions.remove(testResult.getInstance()))
+                    .ifPresent(mockitoSession -> mockitoSession.finishMocking(testResult.getThrowable()));
         }
     }
 
-    protected boolean hasMockitoTestNGListenerInTestHierarchy(Class<?> testClass) {
-        for (Class<?> clazz = testClass; clazz != Object.class; clazz = clazz.getSuperclass()) {
+    protected boolean hasMockitoTestNGListenerInTestHierarchy(ITestResult testResult) {
+        for (Class<?> clazz = testResult.getTestClass().getRealClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
             if (hasMockitoTestNGListener(clazz)) {
                 return true;
             }
