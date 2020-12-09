@@ -95,6 +95,12 @@ bintray {
     key = System.getenv('BINTRAY_API_KEY')
     publish = true //can be changed to 'false' for testing
     dryRun = project.hasProperty("bintrayDryRun")
+
+    // allow override in order to possibility re-run job if something failed
+    // especially Maven Central sync
+    // https://github.com/mockito/mockito-testng/issues/26
+    override = true
+
     publications = ['javaLibrary']
 
     pkg {
