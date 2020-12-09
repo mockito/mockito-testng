@@ -52,7 +52,7 @@ publishing {
                     ['mockitoguy:Szczepan Faber',
                      'mouyang:Matthew Ouyang',
                      'skabashnyuk:Sergii Kabashniuk',
-                     'slawekjaranowski:Slawomir Jaraanowski'].each { devData ->
+                     'slawekjaranowski:Slawomir Jaranowski'].each { devData ->
                         developer {
                             def devInfo = devData.split(':')
                             id = devInfo[0]
