@@ -4,28 +4,31 @@
  */
 package org.mockitousage.testng;
 
-import org.assertj.core.api.Assertions;
-import org.mockito.Mock;
-import org.mockito.exceptions.misusing.PotentialStubbingProblem;
-import org.mockito.exceptions.misusing.UnnecessaryStubbingException;
-import org.mockito.testng.MockitoTestNGListener;
-import org.mockitousage.testng.failuretests.HasUnusedStubs;
-import org.mockitousage.testng.utils.TestNGRunner;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import org.assertj.core.api.Assertions;
+import org.mockito.Mock;
+import org.mockito.exceptions.misusing.PotentialStubbingProblem;
+import org.mockito.exceptions.misusing.UnnecessaryStubbingException;
+import org.mockito.testng.MockitoTestNGListener;
+import org.mockitousage.testng.failuretests.HasUnusedStubs;
+import org.mockitousage.testng.failuretests.HasUnusedStubsInSetup;
+import org.mockitousage.testng.utils.TestNGRunner;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
 @Listeners(MockitoTestNGListener.class)
 public class StrictStubsTest {
 
-    @Mock List list;
+    @Mock
+    List<String> list;
 
-    @Test public void detects_potential_stubbing_problem() {
+    @Test
+    public void detects_potential_stubbing_problem() {
         when(list.add("a")).thenReturn(true);
 
         Assertions.assertThatThrownBy(() -> StrictStubsCode.testStrictStubs(list, "b"))
@@ -40,7 +43,17 @@ public class StrictStubsTest {
         assertThat(result.getFailure()).isInstanceOf(UnnecessaryStubbingException.class);
     }
 
-    @Test public void keeps_tests_dry() {
+    @Test
+    public void detects_unused_stubs_in_setup() {
+        //when
+        TestNGRunner.Result result = new TestNGRunner().run(HasUnusedStubsInSetup.class);
+
+        //then
+        assertThat(result.getFailure()).isInstanceOf(UnnecessaryStubbingException.class);
+    }
+
+    @Test
+    public void keeps_tests_dry() {
         //when
         when(list.add("a")).thenReturn(true);
         list.add("a");
