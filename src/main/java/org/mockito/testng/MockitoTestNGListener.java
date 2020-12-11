@@ -4,16 +4,19 @@
  */
 package org.mockito.testng;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
+import java.util.stream.Stream;
 
 import org.mockito.Mockito;
 import org.mockito.MockitoSession;
 import org.mockito.quality.Strictness;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
-import org.testng.ITestNGListener;
+import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.annotations.Listeners;
 
@@ -55,6 +58,19 @@ import org.testng.annotations.Listeners;
  * </code></pre>
  *
  * <p>
+ * By default {@link MockitoSession} is started with {@link Strictness#STRICT_STUBS}.
+ * You can change this behavior by adding {@link MockitoSettings} to your test class.
+ * </p>
+ *
+ * <pre class="code"><code class="java">
+ * <b>&#064;Listeners(MockitoTestNGListener.class)</b>
+ * <b>&#064;MockitoSettings(strictness = Strictness.WARN)</b>
+ * public class ExampleTest {
+ *  ...
+ * }
+ * </code></pre>
+ *
+ * <p>
  * <code>MockitoTestNGListener</code> not working with parallel tests,
  * more information https://github.com/mockito/mockito-testng/issues/20
  * </p>
@@ -65,49 +81,65 @@ public class MockitoTestNGListener implements IInvokedMethodListener {
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-        if (hasMockitoTestNGListenerInTestHierarchy(testResult)) {
-            sessions.computeIfAbsent(testResult.getInstance(), testInstance ->
-                    Mockito.mockitoSession()
-                            .initMocks(testInstance)
-                            .strictness(Strictness.STRICT_STUBS)
-                            .startMocking()
+        if (shouldBeRunBeforeInvocation(method, testResult)) {
+            sessions.computeIfAbsent(testResult.getInstance(), testInstance -> {
+
+                        Strictness strictness = findAnnotation(testResult, MockitoSettings.class)
+                                .map(MockitoSettings::strictness).orElse(Strictness.STRICT_STUBS);
+
+                        return Mockito.mockitoSession()
+                                .initMocks(testInstance)
+                                .strictness(strictness)
+                                .startMocking();
+                    }
             );
         }
     }
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-        if (hasMockitoTestNGListenerInTestHierarchy(testResult) && method.isTestMethod()) {
+        if (shouldBeRunAfterInvocation(method, testResult)) {
             Optional.ofNullable(sessions.remove(testResult.getInstance()))
                     .ifPresent(mockitoSession -> mockitoSession.finishMocking(testResult.getThrowable()));
         }
     }
 
-    protected boolean hasMockitoTestNGListenerInTestHierarchy(ITestResult testResult) {
-        for (Class<?> clazz = testResult.getTestClass().getRealClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
-            if (hasMockitoTestNGListener(clazz)) {
-                return true;
+    private boolean shouldBeRunBeforeInvocation(IInvokedMethod method, ITestResult testResult) {
+        return !isAfterConfigurationMethod(method) && hasMockitoTestNGListener(testResult);
+    }
+
+    private boolean isAfterConfigurationMethod(IInvokedMethod method) {
+        ITestNGMethod testMethod = method.getTestMethod();
+        return testMethod.isAfterClassConfiguration()
+                || testMethod.isAfterMethodConfiguration()
+                || testMethod.isAfterGroupsConfiguration()
+                || testMethod.isAfterTestConfiguration()
+                || testMethod.isAfterSuiteConfiguration();
+    }
+
+    private boolean shouldBeRunAfterInvocation(IInvokedMethod method, ITestResult testResult) {
+        return method.isTestMethod() && hasMockitoTestNGListener(testResult);
+    }
+
+    protected boolean hasMockitoTestNGListener(ITestResult testResult) {
+
+        return findAnnotation(testResult, Listeners.class)
+                .map(Listeners::value)
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .anyMatch(listener -> listener == MockitoTestNGListener.class);
+    }
+
+    <A extends Annotation> Optional<A> findAnnotation(ITestResult testResult, Class<A> annotationClass) {
+
+        for (Class<?> clazz = testResult.getTestClass().getRealClass();
+             clazz != Object.class; clazz = clazz.getSuperclass()) {
+            Optional<A> annotation = Optional.ofNullable(clazz.getAnnotation(annotationClass));
+            if (annotation.isPresent()) {
+                return annotation;
             }
         }
-        return false;
+
+        return Optional.empty();
     }
-
-    protected boolean hasMockitoTestNGListener(Class<?> clazz) {
-        Listeners listeners = clazz.getAnnotation(Listeners.class);
-        if (listeners == null) {
-            return false;
-        }
-
-        for (Class<? extends ITestNGListener> listenerClass : listeners.value()) {
-            if (listenerClass() == listenerClass) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected Class<MockitoTestNGListener> listenerClass() {
-        return MockitoTestNGListener.class;
-    }
-
 }
