@@ -14,6 +14,7 @@ import org.assertj.core.api.Assertions;
 import org.mockito.Mock;
 import org.mockito.exceptions.misusing.PotentialStubbingProblem;
 import org.mockito.exceptions.misusing.UnnecessaryStubbingException;
+import org.mockito.testng.MockitoSettings;
 import org.mockito.testng.MockitoTestNGListener;
 import org.mockitousage.testng.failuretests.HasUnusedStubs;
 import org.mockitousage.testng.failuretests.HasUnusedStubsInSetup;
@@ -22,6 +23,8 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(MockitoTestNGListener.class)
+// MockitoSettings with default values
+@MockitoSettings
 public class StrictStubsTest {
 
     @Mock
