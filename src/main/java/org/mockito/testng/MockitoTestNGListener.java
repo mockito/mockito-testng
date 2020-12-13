@@ -6,13 +6,16 @@ package org.mockito.testng;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.WeakHashMap;
 import java.util.stream.Stream;
 
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.MockitoSession;
+import org.mockito.internal.util.reflection.Fields;
+import org.mockito.internal.util.reflection.InstanceField;
 import org.mockito.quality.Strictness;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
@@ -77,16 +80,28 @@ import org.testng.annotations.Listeners;
  */
 public class MockitoTestNGListener implements IInvokedMethodListener {
 
-    private final Map<Object, MockitoSession> sessions = new WeakHashMap<>();
+    private final Map<Object, MockitoSession> sessions = new HashMap<>();
+    private final Map<Object, Map<InstanceField, Object>> injectMocksFieldsValues = new HashMap<>();
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
         if (shouldBeRunBeforeInvocation(method, testResult)) {
+
+            // save value of all InjectMocks fields
+            // in order to restore state before next tests
+            // https://github.com/mockito/mockito-testng/issues/28
+            injectMocksFieldsValues.computeIfAbsent(testResult.getInstance(), testInstance ->
+                    Fields.allDeclaredFieldsOf(testInstance).instanceFields()
+                            .stream()
+                            .filter(field -> field.isAnnotatedBy(InjectMocks.class))
+                            .collect(HashMap::new, (m, v) -> m.put(v, v.read()), HashMap::putAll));
+
             sessions.computeIfAbsent(testResult.getInstance(), testInstance -> {
 
                         Strictness strictness = findAnnotation(testResult, MockitoSettings.class)
                                 .map(MockitoSettings::strictness).orElse(Strictness.STRICT_STUBS);
 
+                        // start MockitoSession
                         return Mockito.mockitoSession()
                                 .initMocks(testInstance)
                                 .strictness(strictness)
@@ -99,8 +114,13 @@ public class MockitoTestNGListener implements IInvokedMethodListener {
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
         if (shouldBeRunAfterInvocation(method, testResult)) {
-            Optional.ofNullable(sessions.remove(testResult.getInstance()))
-                    .ifPresent(mockitoSession -> mockitoSession.finishMocking(testResult.getThrowable()));
+            try {
+                Optional.ofNullable(sessions.remove(testResult.getInstance()))
+                        .ifPresent(mockitoSession -> mockitoSession.finishMocking(testResult.getThrowable()));
+            } finally {
+                Optional.ofNullable(injectMocksFieldsValues.remove(testResult.getInstance()))
+                        .ifPresent(fieldsValues -> fieldsValues.forEach(InstanceField::set));
+            }
         }
     }
 

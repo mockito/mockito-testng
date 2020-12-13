@@ -14,7 +14,6 @@ import java.util.Random;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.testng.MockitoTestNGListener;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -44,13 +43,8 @@ public class InjectMocksWithConstructorAndFinalTest {
     private Service service;
 
     private int lastClientHash = 0;
+    private int lastServiceHash = 0;
 
-    @AfterMethod
-    void cleanup() {
-        // final field will be not assigned for next test
-        // for new object constructor will be used
-        service = null;
-    }
 
     @Test(invocationCount = 4)
     void inject_mock_should_be_refreshed() {
@@ -61,6 +55,8 @@ public class InjectMocksWithConstructorAndFinalTest {
 
         // we have new mock
         assertThat(lastClientHash).isNotEqualTo(client.hashCode());
+        // we have new InjectMocks filed value
+        assertThat(lastServiceHash).isNotEqualTo(service.hashCode());
 
         // clear mock
         assertThat(service.callClient()).isZero();
@@ -74,7 +70,8 @@ public class InjectMocksWithConstructorAndFinalTest {
 
         verify(client, times(2)).aMethod();
 
-        // remember last mock hash
+        // remember last mock and InjectMocks field hash
         lastClientHash = client.hashCode();
+        lastServiceHash = service.hashCode();
     }
 }
