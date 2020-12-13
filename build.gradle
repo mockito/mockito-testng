@@ -5,8 +5,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.shipkit:shipkit-auto-version:0.0.+"
-        classpath "org.shipkit:shipkit-changelog:0.0.+"
+        classpath "org.shipkit:shipkit-auto-version:0.+"
+        classpath "org.shipkit:shipkit-changelog:0.+"
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+"
     }
 }
