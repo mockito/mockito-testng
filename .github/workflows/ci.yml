@@ -95,7 +95,12 @@ jobs:
         java-version: 8
 
     - name: Build and publish to Bintray/MavenCentral
-      run: ./gradlew --debug bintrayUpload githubRelease
+      run: |
+        # Print output every minute to avoid Github Actions timeout
+        while sleep 1m; do echo "=====[ $SECONDS seconds elapsed -- still running ]====="; done &
+        ./gradlew bintrayUpload githubRelease
+        # Killing background sleep loop
+        kill %1
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         BINTRAY_API_KEY: ${{secrets.BINTRAY_API_KEY}}
