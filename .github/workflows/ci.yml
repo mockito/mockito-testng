@@ -48,7 +48,6 @@ jobs:
   build:
     needs: [verify]
     runs-on:  ${{ matrix.os }}
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
 
     # Definition of the build matrix
     strategy:
@@ -75,7 +74,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    needs: [build, verify] # build job must pass before we can release
+    needs: [build] # build job must pass before we can release
 
     if: github.event_name == 'push'
         && github.ref == 'refs/heads/master'
