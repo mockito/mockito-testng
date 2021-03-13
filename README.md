@@ -59,16 +59,13 @@ public class MyTest {
 
 `MockitoTestNGListener` will do job for you and initialize all fields annotated with mockito annotations.
 
-By default `MockitoSession` is started with `STRICT_STUBS`.
+By default `MockitoSession` is started with `STRICT_STUBS`.  
 You can change this behavior by adding `@MockitoSettings` to your test class.
 
 ```java
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.testng.MockitoTestNGListener;
 import org.mockito.testng.MockitoSettings;
 import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
 
 @Listeners(MockitoTestNGListener.class)
 @MockitoSettings(strictness = Strictness.WARN)
