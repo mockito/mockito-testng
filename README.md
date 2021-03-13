@@ -63,6 +63,7 @@ By default `MockitoSession` is started with `STRICT_STUBS`.
 You can change this behavior by adding `@MockitoSettings` to your test class.
 
 ```java
+import org.mockito.quality.Strictness;
 import org.mockito.testng.MockitoTestNGListener;
 import org.mockito.testng.MockitoSettings;
 import org.testng.annotations.Listeners;

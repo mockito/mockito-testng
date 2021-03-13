@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 @Test(description = "Always failing, shouldn't be listed in 'mockito-testng.xml'")
 public class HasUnusedStubs {
     @Mock
-    List mock;
+    List<String> mock;
     @Test public void test() {
         when(mock.add("a")).thenReturn(true);
     }
