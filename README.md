@@ -63,6 +63,7 @@ By default `MockitoSession` is started with `STRICT_STUBS`.
 You can change this behavior by adding `@MockitoSettings` to your test class.
 
 ```java
+import org.mockito.quality.Strictness;
 import org.mockito.testng.MockitoTestNGListener;
 import org.mockito.testng.MockitoSettings;
 import org.testng.annotations.Listeners;
@@ -74,6 +75,11 @@ public class MyTest {
 }
 ```
 
+## Notices
+
+ - `MockitoSession` is started before each `test method` or before method annotated with `@BeforeMethod`,
+   another annotations `@BeforeXXX` aren't supported #40
+   
 ## Developing
 
 - open in IDEA to develop or run ```./gradlew idea``` and then open in IDEA

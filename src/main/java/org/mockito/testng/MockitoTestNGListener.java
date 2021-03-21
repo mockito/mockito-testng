@@ -19,7 +19,6 @@ import org.mockito.internal.util.reflection.InstanceField;
 import org.mockito.quality.Strictness;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
-import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.annotations.Listeners;
 
@@ -30,8 +29,9 @@ import org.testng.annotations.Listeners;
  *
  * <ul>
  *     <li>
- *         Before any TestNG method, either a <em>configuration method</em> (&#064;BeforeMethod, &#064;BeforeClass, etc)
- *         or a <em>test</em> method MockitoSession is started by:
+ *         Before any <em>test</em> method or a <em>configuration method</em> <em>&#064;BeforeMethod</em>
+ *         MockitoSession is started by:
+ *
  *         <pre class="code"><code class="java">
  *         Mockito.mockitoSession()
  *          .initMocks(testInstance)
@@ -125,16 +125,11 @@ public class MockitoTestNGListener implements IInvokedMethodListener {
     }
 
     private boolean shouldBeRunBeforeInvocation(IInvokedMethod method, ITestResult testResult) {
-        return !isAfterConfigurationMethod(method) && hasMockitoTestNGListener(testResult);
+        return (method.isTestMethod() || isBeforeMethod(method)) && hasMockitoTestNGListener(testResult);
     }
 
-    private boolean isAfterConfigurationMethod(IInvokedMethod method) {
-        ITestNGMethod testMethod = method.getTestMethod();
-        return testMethod.isAfterClassConfiguration()
-                || testMethod.isAfterMethodConfiguration()
-                || testMethod.isAfterGroupsConfiguration()
-                || testMethod.isAfterTestConfiguration()
-                || testMethod.isAfterSuiteConfiguration();
+    private boolean isBeforeMethod(IInvokedMethod method) {
+        return method.getTestMethod().isBeforeMethodConfiguration();
     }
 
     private boolean shouldBeRunAfterInvocation(IInvokedMethod method, ITestResult testResult) {
