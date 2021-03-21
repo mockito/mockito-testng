@@ -75,6 +75,11 @@ public class MyTest {
 }
 ```
 
+## Notices
+
+ - `MockitoSession` is started before each `test method` or before method annotated with `@BeforeMethod`,
+   another annotations `@BeforeXXX` aren't supported #40
+   
 ## Developing
 
 - open in IDEA to develop or run ```./gradlew idea``` and then open in IDEA
