@@ -35,6 +35,7 @@ jobs:
         uses: actions/setup-java@v2 # https://github.com/actions/setup-java
         with:
           java-version: 8
+          distribution: 'adopt'
 
       - name: 3. Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1 # https://github.com/gradle/wrapper-validation-action
@@ -64,6 +65,7 @@ jobs:
       uses: actions/setup-java@v2 # https://github.com/actions/setup-java
       with:
         java-version: ${{ matrix.java }}
+        distribution: 'adopt'
 
     - name: 3. Build on ${{ matrix.os }} with Java ${{ matrix.java }}
       run: ./gradlew build bintrayUpload idea -PbintrayDryRun
@@ -92,6 +94,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: 8
+        distribution: 'adopt'
 
     - name: Build and publish to Bintray/MavenCentral
       run: |
