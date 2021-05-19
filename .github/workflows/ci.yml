@@ -68,7 +68,7 @@ jobs:
         distribution: 'adopt'
 
     - name: 3. Build on ${{ matrix.os }} with Java ${{ matrix.java }}
-      run: ./gradlew build bintrayUpload idea -PbintrayDryRun
+      run: ./gradlew build idea
 
   #
   # Release job, only for pushes to the main development branch
@@ -97,15 +97,10 @@ jobs:
         distribution: 'adopt'
 
     - name: Build and publish to Bintray/MavenCentral
-      run: |
-        # Print output every minute to avoid Github Actions timeout
-        while sleep 1m; do echo "=====[ $SECONDS seconds elapsed -- still running ]====="; done &
-        ./gradlew bintrayUpload githubRelease
-        # Killing background sleep loop
-        kill %1
+      run: ./gradlew publishToSonatype closeAndReleaseStagingRepository githubRelease
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        BINTRAY_API_KEY: ${{secrets.BINTRAY_API_KEY}}
         NEXUS_TOKEN_USER: ${{secrets.NEXUS_TOKEN_USER}}
         NEXUS_TOKEN_PWD: ${{secrets.NEXUS_TOKEN_PWD}}
-
+        PGP_KEY: ${{secrets.PGP_KEY}}
+        PGP_PWD: ${{secrets.PGP_PWD}}
