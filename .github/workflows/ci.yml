@@ -96,7 +96,7 @@ jobs:
         java-version: 8
         distribution: 'adopt'
 
-    - name: Build and publish to Bintray/MavenCentral
+    - name: Build and publish to Sonatype/MavenCentral
       run: ./gradlew publishToSonatype closeAndReleaseStagingRepository githubRelease
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
