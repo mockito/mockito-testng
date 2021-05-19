@@ -87,9 +87,8 @@ public class MyTest {
 
 ## Releasing
 
-Every merged pull request is published to JCenter and Maven Central.
-Actually, any change on master that happily builds on CI is published
-unless the binaries are the same as the previous release.
+Every merged pull request is published to Maven Central.
+Actually, any change on master that happily builds on CI is published.
 The release automation uses Shipkit framework (http://shipkit.org).
 
 ## History
