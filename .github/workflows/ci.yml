@@ -38,7 +38,7 @@ jobs:
           distribution: 'adopt'
 
       - name: 3. Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1.0.3 # https://github.com/gradle/wrapper-validation-action
+        uses: gradle/wrapper-validation-action@v1.0.4 # https://github.com/gradle/wrapper-validation-action
 
       - name: 4. Build and check reproducibility of artifacts
         run: ./check_reproducibility.sh
