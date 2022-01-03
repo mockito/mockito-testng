@@ -35,7 +35,7 @@ jobs:
         uses: actions/setup-java@v2 # https://github.com/actions/setup-java
         with:
           java-version: 8
-          distribution: 'adopt'
+          distribution: 'temurin'
 
       - name: 3. Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1.0.4 # https://github.com/gradle/wrapper-validation-action
@@ -53,7 +53,7 @@ jobs:
     # Definition of the build matrix
     strategy:
       matrix:
-        java: [8, 11, 15]
+        java: [8, 11, 17]
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
 
     steps:
@@ -65,7 +65,7 @@ jobs:
       uses: actions/setup-java@v2 # https://github.com/actions/setup-java
       with:
         java-version: ${{ matrix.java }}
-        distribution: 'adopt'
+        distribution: 'temurin'
 
     - name: 3. Build on ${{ matrix.os }} with Java ${{ matrix.java }}
       run: ./gradlew build idea
@@ -95,7 +95,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: 8
-        distribution: 'adopt'
+        distribution: 'temurin'
 
     - name: Build and publish to Sonatype/MavenCentral
       run: ./gradlew publishToSonatype closeAndReleaseStagingRepository githubRelease
