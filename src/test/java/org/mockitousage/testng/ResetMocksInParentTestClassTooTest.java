@@ -4,9 +4,9 @@
  */
 package org.mockitousage.testng;
 
-import org.testng.annotations.Test;
+import static org.mockito.Mockito.verifyNoInteractions;
 
-import static org.mockito.Mockito.verifyZeroInteractions;
+import org.testng.annotations.Test;
 
 public class ResetMocksInParentTestClassTooTest extends ParentTest {
 
@@ -17,6 +17,6 @@ public class ResetMocksInParentTestClassTooTest extends ParentTest {
 
     @Test
     public void verify__zero_interaction_with_parent_mock() throws Exception {
-        verifyZeroInteractions(parentMockField);
+        verifyNoInteractions(parentMockField);
     }
 }
