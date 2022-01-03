@@ -4,6 +4,8 @@
  */
 package org.mockitousage.testng.failuretests;
 
+import static org.mockito.ArgumentMatchers.anyString;
+
 import org.mockito.Mock;
 import org.mockito.testng.MockitoTestNGListener;
 import org.testng.annotations.BeforeMethod;
@@ -11,8 +13,6 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import java.util.List;
-
-import static org.mockito.Matchers.anyString;
 
 /**
  * Should fail.
@@ -32,7 +32,7 @@ public class FailingOnPurposeBecauseWrongStubbingSyntaxInConfigurationMethod {
 
 
     @Test
-    public void here_to_execute_the_config_method() throws Exception {
+    public void here_to_execute_the_config_method() {
     }
 
 }

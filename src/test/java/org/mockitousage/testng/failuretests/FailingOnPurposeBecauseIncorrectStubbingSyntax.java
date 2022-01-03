@@ -6,9 +6,6 @@ package org.mockitousage.testng.failuretests;
 
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-
-import java.io.PrintStream;
 
 import org.mockito.testng.MockitoTestNGListener;
 import org.testng.annotations.Listeners;
