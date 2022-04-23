@@ -5,8 +5,11 @@
 package org.mockito.testng;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -14,7 +17,6 @@ import java.util.stream.Stream;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.MockitoSession;
-import org.mockito.internal.util.reflection.Fields;
 import org.mockito.internal.util.reflection.InstanceField;
 import org.mockito.quality.Strictness;
 import org.testng.IInvokedMethod;
@@ -91,7 +93,7 @@ public class MockitoTestNGListener implements IInvokedMethodListener {
             // in order to restore state before next tests
             // https://github.com/mockito/mockito-testng/issues/28
             injectMocksFieldsValues.computeIfAbsent(testResult.getInstance(), testInstance ->
-                    Fields.allDeclaredFieldsOf(testInstance).instanceFields()
+                    allDeclaredFieldsOf(testInstance)
                             .stream()
                             .filter(field -> field.isAnnotatedBy(InjectMocks.class))
                             .collect(HashMap::new, (m, v) -> m.put(v, v.read()), HashMap::putAll));
@@ -156,5 +158,15 @@ public class MockitoTestNGListener implements IInvokedMethodListener {
         }
 
         return Optional.empty();
+    }
+
+    private static List<InstanceField> allDeclaredFieldsOf(Object testInstance) {
+        List<InstanceField> result = new ArrayList<>();
+        for (Class<?> clazz = testInstance.getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
+            for (Field field : clazz.getDeclaredFields()) {
+                result.add(new InstanceField(field, testInstance));
+            }
+        }
+        return result;
     }
 }
