@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    def mockitoVersion = "4.10.0"
+    def mockitoVersion = "5.1.1"
 
     api "org.mockito:mockito-core:$mockitoVersion"
     api "org.testng:testng:7.5"
