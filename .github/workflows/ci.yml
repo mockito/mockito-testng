@@ -31,11 +31,11 @@ jobs:
       - name: 1. Check out code
         uses: actions/checkout@v3 # https://github.com/actions/checkout
 
-      - name: 2. Set up Java 8
+      - name: 2. Set up Java 11
         uses: actions/setup-java@v3 # https://github.com/actions/setup-java
         with:
-          java-version: 8
-          distribution: 'temurin'
+          java-version: 11
+          distribution: 'zulu'
 
       - name: 3. Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1.0.5 # https://github.com/gradle/wrapper-validation-action
@@ -53,7 +53,7 @@ jobs:
     # Definition of the build matrix
     strategy:
       matrix:
-        java: [8, 11, 17]
+        java: [11, 17]
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
 
     steps:
@@ -91,11 +91,11 @@ jobs:
       with:
         fetch-depth: '0' # https://github.com/shipkit/shipkit-changelog#fetch-depth-on-ci
 
-    - name: Set up Java 8
+    - name: Set up Java 11
       uses: actions/setup-java@v3
       with:
-        java-version: 8
-        distribution: 'temurin'
+        java-version: 11
+        distribution: 'zulu'
 
     - name: Build and publish to Sonatype/MavenCentral
       run: ./gradlew publishToSonatype closeAndReleaseStagingRepository githubRelease
