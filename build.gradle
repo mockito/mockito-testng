@@ -36,7 +36,7 @@ dependencies {
     api "org.mockito:mockito-core:$mockitoVersion"
     api "org.testng:testng:7.5"
 
-    testImplementation "org.assertj:assertj-core:3.24.2"
+    testImplementation "org.assertj:assertj-core:3.27.3"
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
 }
 
