@@ -34,7 +34,7 @@ dependencies {
     def mockitoVersion = "5.2.0"
 
     api "org.mockito:mockito-core:$mockitoVersion"
-    api "org.testng:testng:7.5"
+    api "org.testng:testng:7.11.0"
 
     testImplementation "org.assertj:assertj-core:3.27.3"
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
