@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import org.mockito.InjectMocks;
@@ -82,8 +83,8 @@ import org.testng.annotations.Listeners;
  */
 public class MockitoTestNGListener implements IInvokedMethodListener {
 
-    private final Map<Object, MockitoSession> sessions = new HashMap<>();
-    private final Map<Object, Map<InstanceField, Object>> injectMocksFieldsValues = new HashMap<>();
+    private final Map<Object, MockitoSession> sessions = new ConcurrentHashMap<>();
+    private final Map<Object, Map<InstanceField, Object>> injectMocksFieldsValues = new ConcurrentHashMap<>();
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
